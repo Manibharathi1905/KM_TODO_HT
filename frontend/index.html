@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskMate - Your Smart Todo Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body {
+      background: linear-gradient(145deg, #f8f9fa, #e3f2fd);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+    }
+    .app {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 850px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease-in-out;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      color: #00695c;
+    }
+    .task-input {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .task-input input {
+      flex: 1;
+      padding: 14px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f1f8ff;
+    }
+    .task-input button {
+      padding: 14px 24px;
+      background: #00897b;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .filters button {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #c8e6c9;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .filters button:hover {
+      background: #a5d6a7;
+    }
+    .task-list { list-style: none; }
+    .task-list li {
+      background: #f3f9f4;
+      border: 1px solid #d0e9d2;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .task-list li.done span {
+      text-decoration: line-through;
+      color: #999;
+    }
+    .task-list li span {
+      flex: 1;
+      cursor: pointer;
+    }
+    .task-list li button {
+      background: none;
+      border: none;
+      color: #e53935;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>TaskMate 🧠</h1>
+      <p>Hello, Guest</p>
+    </header>
+
+    <div class="task-input">
+      <input id="taskInput" type="text" placeholder="What would you like to accomplish today?">
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <div class="filters">
+      <button onclick="setFilter('all')">All</button>
+      <button onclick="setFilter('inprogress')">In Progress</button>
+      <button onclick="setFilter('completed')">Completed</button>
+    </div>
+
+    <ul class="task-list" id="taskList"></ul>
+
+    <footer>
+      &copy; 2025 TaskMate • Built for the Katomaran Hackathon 💡
+    </footer>
+  </div>
+
+  <script>
+    let tasks = [
+      { text: '🧠 Finalize Hackathon README with architecture diagram', done: false },
+      { text: '📤 Deploy backend API to Render with MongoDB Atlas', done: true },
+      { text: '🎨 Design mobile-first UI for dashboard view', done: false },
+      { text: '🤝 Share task with teammate via email', done: false },
+      { text: '🧪 Test real-time updates via Socket.IO', done: true }
+    ];
+    let filter = 'all';
+
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      list.innerHTML = '';
+      tasks
+        .filter(t => filter === 'all' || (filter === 'completed' && t.done) || (filter === 'inprogress' && !t.done))
+        .forEach((t, i) => {
+          const li = document.createElement('li');
+          if (t.done) li.classList.add('done');
+
+          const span = document.createElement('span');
+          span.textContent = t.text;
+          span.onclick = () => toggleTask(i);
+
+          const btn = document.createElement('button');
+          btn.textContent = '×';
+          btn.onclick = () => deleteTask(i);
+
+          li.appendChild(span);
+          li.appendChild(btn);
+          list.appendChild(li);
+        });
+    }
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const val = input.value.trim();
+      if (val) {
+        tasks.unshift({ text: val, done: false });
+        input.value = '';
+        renderTasks();
+      }
+    }
+
+    function toggleTask(i) {
+      tasks[i].done = !tasks[i].done;
+      renderTasks();
+    }
+
+    function deleteTask(i) {
+      tasks.splice(i, 1);
+      renderTasks();
+    }
+
+    function setFilter(f) {
+      filter = f;
+      renderTasks();
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
